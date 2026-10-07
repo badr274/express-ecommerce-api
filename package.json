@@ -15,10 +15,14 @@
   "license": "ISC",
   "type": "commonjs",
   "dependencies": {
-    "express": "^5.2.1"
+    "dotenv": "^18.0.5",
+    "express": "^5.2.1",
+    "mongoose": "^9.10.4",
+    "morgan": "^1.12.1"
   },
   "devDependencies": {
     "@types/express": "^5.0.6",
+    "@types/morgan": "^1.9.10",
     "@types/node": "^26.6.4",
     "husky": "^9.1.7",
     "tsx": "^4.23.15",
