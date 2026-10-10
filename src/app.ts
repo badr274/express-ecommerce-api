@@ -5,6 +5,7 @@ import { errorMiddleware } from "./middlewares/error.middleware";
 import morgan from "morgan";
 const app = express();
 app.use(express.json());
+app.use(morgan("dev"));
 
 app.get("/", (_req, res) => {
   res.json({
@@ -17,7 +18,6 @@ app.use("/api/products", productRoutes);
 app.use("/api/categories", categoryRoutes);
 
 //** Middlewares */
-app.use(morgan("dev"));
 app.use(errorMiddleware);
 
 export default app;

@@ -1,23 +1,41 @@
 import { NextFunction, Request, Response } from "express";
 import { ProductService } from "./product.service";
+import slugify from "slugify";
+import { IProduct } from "./product.types";
 
 const productService = new ProductService();
 export class ProductController {
-  async createProduct(req: Request, res: Response, next: NextFunction) {
+  createProduct = async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const product = await productService.createProduct(req.body);
+      const payload: IProduct = {
+        name: req.body.name,
+        slug: slugify(req.body.name),
+        description: req.body.description,
+        price: req.body.price,
+        quantity: req.body.quantity,
+      };
+      const product = await productService.createProduct(payload);
       res.status(201).json({ success: true, data: product });
     } catch (error) {
       next(error);
     }
-  }
+  };
 
-  async getProducts(_req: Request, res: Response, next: NextFunction) {
+  getProducts = async (_req: Request, res: Response, next: NextFunction) => {
     try {
-      const products = await productService.getProducts();
-      res.status(200).json({ success: true, data: products });
+      const { page, limit } = res.locals.pagination;
+      const { products, pagination } = await productService.getProducts(
+        page,
+        limit,
+      );
+      res.status(200).json({
+        success: true,
+        data: products,
+        results: products.length,
+        pagination,
+      });
     } catch (error) {
       next(error);
     }
-  }
+  };
 }

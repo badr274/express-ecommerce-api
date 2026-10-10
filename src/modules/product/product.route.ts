@@ -1,10 +1,10 @@
 import { Router } from "express";
 import { ProductController } from "./product.controller";
+import { paginationMiddleware } from "../../middlewares/pagination.middleware";
 
 const router = Router();
-const productController = new ProductController();
+const { createProduct, getProducts } = new ProductController();
 
-router.post("/", productController.createProduct.bind(productController));
-router.get("/", productController.getProducts.bind(productController));
+router.route("/").get(paginationMiddleware, getProducts).post(createProduct);
 
 export default router;
