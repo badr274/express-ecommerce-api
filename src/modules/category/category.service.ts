@@ -1,4 +1,3 @@
-import mongoose from "mongoose";
 import { AppError } from "../../utils/app-error";
 import { categoryModel } from "./category.model";
 import { ICategory } from "./category.types";
@@ -43,9 +42,6 @@ export class CategoryService {
   }
 
   async getCategory(id: string) {
-    // if (!mongoose.isValidObjectId(id)) {
-    //   throw new AppError("Invalid Category ID", 400);
-    // }
     const category = await categoryModel.findById(id);
     if (!category) {
       throw new AppError("Category Not Found", 404);
@@ -55,10 +51,6 @@ export class CategoryService {
   }
 
   async updateCategory(id: string, data: Partial<ICategory>) {
-    if (!mongoose.isObjectIdOrHexString(id)) {
-      throw new AppError("Invalid Category ID", 400);
-    }
-
     const updateData = { ...data };
 
     if (data.name !== undefined) {
@@ -83,6 +75,15 @@ export class CategoryService {
 
     if (!category) {
       throw new AppError("Category Not Found", 404);
+    }
+
+    return category;
+  }
+
+  async deleteCategory(id: string) {
+    const category = await categoryModel.findByIdAndDelete(id);
+    if (!category) {
+      throw new AppError("Category not found", 404);
     }
 
     return category;

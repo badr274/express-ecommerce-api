@@ -1,11 +1,37 @@
 import { Router } from "express";
 import { CategoryController } from "./category.controller";
-import { paginationMiddleware } from "../../middlewares/pagination.middleware";
+import { validateRequest } from "../../middlewares/validate.middleware";
+import {
+  createCategorySchema,
+  updateCategorySchema,
+} from "./category.validation";
+import { paginationSchema } from "../../utils/validation/pagination.validation";
+import { idParamsSchema } from "../../utils/validation/common.validation";
 
 const router = Router();
-const { getCategories, createCategory, getCategory, updateCategory } =
-  new CategoryController();
+const {
+  getCategories,
+  createCategory,
+  getCategory,
+  updateCategory,
+  deleteCategory,
+} = new CategoryController();
 
-router.route("/").get(paginationMiddleware, getCategories).post(createCategory);
-router.route("/:id").get(getCategory).put(updateCategory);
+router
+  .route("/")
+  .get(
+    validateRequest({
+      query: paginationSchema,
+    }),
+    getCategories,
+  )
+  .post(validateRequest({ body: createCategorySchema }), createCategory);
+router
+  .route("/:id")
+  .get(validateRequest({ params: idParamsSchema }), getCategory)
+  .put(
+    validateRequest({ params: idParamsSchema, body: updateCategorySchema }),
+    updateCategory,
+  )
+  .delete(validateRequest({ params: idParamsSchema }), deleteCategory);
 export default router;

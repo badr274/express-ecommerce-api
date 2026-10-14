@@ -1,9 +1,10 @@
 declare global {
   namespace Express {
     interface Locals {
-      pagination: {
-        page: number;
-        limit: number;
+      validated?: {
+        body?: any;
+        params?: any;
+        query?: any;
       };
     }
   }

@@ -1,4 +1,4 @@
-import { ErrorRequestHandler } from "express";
+import type { ErrorRequestHandler } from "express";
 import { AppError } from "../utils/app-error";
 
 export const errorMiddleware: ErrorRequestHandler = (
@@ -8,13 +8,19 @@ export const errorMiddleware: ErrorRequestHandler = (
   _next,
 ) => {
   console.error(error);
+
   if (error instanceof AppError) {
-    res
-      .status(error.statusCode)
-      .json({ success: false, message: error.message });
+    res.status(error.statusCode).json({
+      success: false,
+      message: error.message,
+      ...(error.errors ? { errors: error.errors } : {}),
+    });
 
     return;
   }
 
-  res.status(500).json({ success: false, message: "Internal Server Error" });
+  res.status(500).json({
+    success: false,
+    message: "Internal Server Error",
+  });
 };
